@@ -70,4 +70,4 @@ if __name__ == "__main__":
         usi = 27
     with ThreadPoolExecutor(max_workers=thd) as executor:
         for i in range(int(amnt)):
-            executor.submit(main)
+            executor.submit(run)
